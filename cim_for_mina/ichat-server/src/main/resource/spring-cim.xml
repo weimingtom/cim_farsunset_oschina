@@ -42,7 +42,9 @@
 				<entry key="sessionClosedHander">
 					<bean class="com.farsunset.ichat.cim.handler.SessionClosedHandler"/>
 				</entry>
-				 
+				<entry key="client_get_offline_message">
+					<bean class="com.farsunset.ichat.cim.handler.PushOfflineMessageHandler"/>
+				</entry>
 			</map>
 		</property>
 	</bean>
