@@ -17,6 +17,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.farsunset.cim.client.android.CIMPushManager;
 import com.farsunset.cim.nio.constant.CIMConstant;
+import com.farsunset.cim.nio.mutual.SentBody;
 import com.farsunset.cim.nio.mutual.Message;
 import com.farsunset.ichat.example.R;
 import com.farsunset.ichat.example.adapter.SystemMsgListViewAdapter;
@@ -63,6 +64,17 @@ public class SystemMessageActivity extends CIMMonitorActivity implements OnClick
          
 		 showToask("登录成功，请通过后台页面发送消息吧^_^");
 	}
+	
+	
+	//获取离线消息，代码示例，前提是服务端要实现此功能
+	private void getOfflineMessage()
+	{
+		SentBody sent = new SentBody();
+		sent.setKey(CIMConstant.RequestKey.CLIENT_OFFLINE_MESSAGE);
+		sent.put("account", this.getIntent().getStringExtra("account"));
+		CIMPushManager.sendRequest(this, sent);
+	}
+	
 	
 	//收到消息
 	@Override

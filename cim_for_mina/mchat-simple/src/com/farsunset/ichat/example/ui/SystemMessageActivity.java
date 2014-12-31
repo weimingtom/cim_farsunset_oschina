@@ -13,11 +13,13 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
+
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.farsunset.cim.client.android.CIMPushManager;
 import com.farsunset.cim.nio.constant.CIMConstant;
 import com.farsunset.cim.nio.mutual.Message;
+import com.farsunset.cim.nio.mutual.SentBody;
 import com.farsunset.ichat.example.R;
 import com.farsunset.ichat.example.adapter.SystemMsgListViewAdapter;
 import com.farsunset.ichat.example.app.CIMMonitorActivity;
@@ -88,6 +90,14 @@ public class SystemMessageActivity extends CIMMonitorActivity implements OnClick
 
 	}
  
+	//获取离线消息，代码示例，前提是服务端要实现此功能
+	private void getOfflineMessage()
+	{
+		SentBody sent = new SentBody();
+		sent.setKey(CIMConstant.RequestKey.CLIENT_OFFLINE_MESSAGE);
+		sent.put("account", this.getIntent().getStringExtra("account"));
+		CIMPushManager.sendRequest(this, sent);
+	}
  
 	@Override
 	public void onConnectionSucceed() {
@@ -112,14 +122,7 @@ public class SystemMessageActivity extends CIMMonitorActivity implements OnClick
 	private void  sendMessage() throws Exception
 	{
 		
-		
-		apiParams.put("content", "hello world!");
-		apiParams.put("sender", "xiaogou");//发送者账号
-		apiParams.put("receiver", "xiaomao");//消息接收者账号
-		apiParams.put("type",Constant.MessageType.TYPE_0);
-		
 		requester.execute(new TypeReference<JSONObject>(){}.getType(), null, SEND_MESSAGE_API_URL);
-		
 	}
 
 	@Override
@@ -136,6 +139,12 @@ public class SystemMessageActivity extends CIMMonitorActivity implements OnClick
 	
 	@Override
 	public Map<String, Object> getRequestParams() {
+		
+		apiParams.put("content", "hello world!");
+		apiParams.put("sender", "xiaogou");//发送者账号
+		apiParams.put("receiver", "xiaomao");//消息接收者账号
+		apiParams.put("type",Constant.MessageType.TYPE_0);
+
 		return apiParams;
 	}
 

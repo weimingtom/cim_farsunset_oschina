@@ -8,7 +8,9 @@ import org.apache.struts2.ServletActionContext;
 import org.springframework.web.bind.ServletRequestBindingException;
 
 import com.farsunset.cim.nio.mutual.Message;
+import com.farsunset.ichat.cim.push.DefaultMessagePusher;
 import com.farsunset.ichat.cim.push.SystemMessagePusher;
+import com.farsunset.ichat.common.util.Constants;
 import com.farsunset.ichat.common.util.ContextHolder;
 import com.google.gson.Gson;
 import com.opensymphony.xwork2.ActionSupport;
@@ -43,9 +45,16 @@ public class MessageAction  extends  ActionSupport  implements ModelDriven<Messa
 	        
 			checkParams();
 	        
-	        //向客户端 发送消息
-	        ContextHolder.getBean(SystemMessagePusher.class).pushMessageToUser(message);
-	        
+			if(Constants.MessageType.TYPE_2.equals(message.getType()))
+			{
+				  //向客户端 发送消息
+		        ContextHolder.getBean(SystemMessagePusher.class).pushMessageToUser(message);
+			}else
+			{
+				  //向客户端 发送消息
+		        ContextHolder.getBean(DefaultMessagePusher.class).pushMessageToUser(message);
+			}
+	              
 	        data.put("id", message.getMid());
 	        data.put("createTime", String.valueOf(message.getTimestamp()));
 	        datamap.put("data", data);
