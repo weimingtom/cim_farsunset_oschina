@@ -1,4 +1,3 @@
- 
 package com.farsunset.ichat.api.action;
 
 import java.util.HashMap;
@@ -29,10 +28,10 @@ public class MessageAction  extends  ActionSupport  implements ModelDriven<Messa
 	Message message = new Message();
  
     /**
-     * ¹ØÓÚhttp²ÎÊý»ñÈ¡£¬  struts2  µÄÄ£ÐÍÇý¶¯  ±ÈÈç http ²ÎÊý sender=xiaomao&receiver=xiaogou
-     * struts×Ô¶¯»á½«²ÎÊýµÄÖµ ´æÈëgetModel()·µ»ØµÄ¶ÔÏóµÄ¶ÔÓ¦ÊôÐÔÖÐ£¬¼´xiaomao»á´æÈëmessage.senderÊôÐÔ,xiaogou»á´æÈëmessage.receiverÊôÐÔ
-     * Ê¡È¥ÁËrequest.getParameter("sender")·½Ê½»ñÈ¡²ÎÊý£¬£¬Èç¹û²ÎÊýÃûÔÚgetModel()·µ»ØµÄ¶ÔÏóÖÐ²»´æÔÚ£¬ÔòÐèÒªÓÃrequest.getParameter()»ñÈ¡
-     * ÆäËûÏà¹Ø*Action.javaÖÐ Í¬Àí£¬ÕâÀï×öÍ³Ò»ËµÃ÷!
+     * å…³äºŽhttpå‚æ•°èŽ·å–ï¼Œ  struts2  çš„æ¨¡åž‹é©±åŠ¨  æ¯”å¦‚ http å‚æ•° sender=xiaomao&receiver=xiaogou
+     * strutsè‡ªåŠ¨ä¼šå°†å‚æ•°çš„å€¼ å­˜å…¥getModel()è¿”å›žçš„å¯¹è±¡çš„å¯¹åº”å±žæ€§ä¸­ï¼Œå³xiaomaoä¼šå­˜å…¥message.senderå±žæ€§,xiaogouä¼šå­˜å…¥message.receiverå±žæ€§
+     * çœåŽ»äº†request.getParameter("sender")æ–¹å¼èŽ·å–å‚æ•°ï¼Œï¼Œå¦‚æžœå‚æ•°ååœ¨getModel()è¿”å›žçš„å¯¹è±¡ä¸­ä¸å­˜åœ¨ï¼Œåˆ™éœ€è¦ç”¨request.getParameter()èŽ·å–
+     * å…¶ä»–ç›¸å…³*Action.javaä¸­ åŒç†ï¼Œè¿™é‡Œåšç»Ÿä¸€è¯´æ˜Ž!
      */
     public String send() throws Exception {
         
@@ -47,12 +46,12 @@ public class MessageAction  extends  ActionSupport  implements ModelDriven<Messa
 	        
 			if(Constants.MessageType.TYPE_2.equals(message.getType()))
 			{
-				  //Ïò¿Í»§¶Ë ·¢ËÍÏûÏ¢
+				  //å‘å®¢æˆ·ç«¯ å‘é€æ¶ˆæ¯
 		        ContextHolder.getBean(SystemMessagePusher.class).pushMessageToUser(message);
 			}else
 			{
-				  //Ïò¿Í»§¶Ë ·¢ËÍÏûÏ¢
-		        ContextHolder.getBean(DefaultMessagePusher.class).pushMessageToUser(message);
+				  //å‘å®¢æˆ·ç«¯ å‘é€æ¶ˆæ¯
+		        ContextHolder.getBean("messagePusher").pushMessageToUser(message);
 			}
 	              
 	        data.put("id", message.getMid());
@@ -72,7 +71,7 @@ public class MessageAction  extends  ActionSupport  implements ModelDriven<Messa
 
     
     /**
-     * ÎÄ¼þÓÉ¿Í»§¶Ë·¢Íù°¢ÀïÔÆ OSS ´æ´¢
+     * æ–‡ä»¶ç”±å®¢æˆ·ç«¯å‘å¾€é˜¿é‡Œäº‘ OSS å­˜å‚¨
      * @param messageServiceImpl
      */
    /* private void fileHandler(Message mo, HttpServletRequest request) throws IOException 
@@ -87,7 +86,7 @@ public class MessageAction  extends  ActionSupport  implements ModelDriven<Messa
 		        String dir = dirMap.get(fileType);
 		        if(StringUtils.isEmpty(dir))
 		        {
-		          	  throw new IllegalArgumentException("fileType:" +fileType+" Î´¶¨Òå" );
+		          	  throw new IllegalArgumentException("fileType:" +fileType+" æœªå®šä¹‰" );
 		          	  
 		        }
 		        	String path = request.getSession().getServletContext().getRealPath(dir);
@@ -107,7 +106,7 @@ public class MessageAction  extends  ActionSupport  implements ModelDriven<Messa
     	   
           if(StringUtils.isEmpty(message.getReceiver()))
           {
-        	  throw new IllegalArgumentException("receiver ²»ÄÜÎª¿Õ!");
+        	  throw new IllegalArgumentException("receiver ä¸èƒ½ä¸ºç©º!");
         	  
           }
     }
