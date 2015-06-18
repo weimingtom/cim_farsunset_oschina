@@ -51,7 +51,7 @@ public class MessageAction  extends  ActionSupport  implements ModelDriven<Messa
 			}else
 			{
 				  //向客户端 发送消息
-		        ContextHolder.getBean("messagePusher").pushMessageToUser(message);
+		        ((DefaultMessagePusher)ContextHolder.getBean("messagePusher")).pushMessageToUser(message);
 			}
 	              
 	        data.put("id", message.getMid());
