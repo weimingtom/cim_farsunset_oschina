@@ -61,10 +61,10 @@ CIMPushManager.init(context,"125.12.35.231",28888);
 	 * 设置一个账号登录到服务端
 	 * @param account 用户唯一ID
 	 */
-public static  void setAccount(Context context,String account)
+public static  void bindAccount(Context context,String account)
 
 示例
-CIMPushManager.setAccount(context,"xiyang");
+CIMPushManager.bindAccount(context,"xiyang");
 
 
 
