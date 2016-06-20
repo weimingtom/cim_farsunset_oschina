@@ -197,7 +197,7 @@ public class Message implements Serializable {
 	}
 
 	public boolean isNotEmpty(String txt) {
-		return txt != null && !txt.isEmpty();
+		return txt != null && txt.trim().length()>0;
 	}
 
 	
