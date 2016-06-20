@@ -37,7 +37,7 @@
   
     
    
-	<bean id="CIMNioAcceptor" class="com.farsunset.cim.sdk.server.handler.CIMNioSocketAcceptor"
+	<bean id="CIMNioAcceptor" class="com.farsunset.cim.sdk.server.launcher.CIMNioSocketAcceptor"
 		init-method="bind" destroy-method="unbind">
 		<property name="port" value="23456" />
 		<property name="ioHandler" ref="cimIoHandler" />
@@ -52,4 +52,3 @@
 	  -->
 	  
 </beans>
- 
