@@ -2,18 +2,24 @@ package
 {
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.IOErrorEvent;
 	import flash.events.ProgressEvent;
+	import flash.events.TimerEvent;
 	import flash.external.ExternalInterface;
 	import flash.media.Sound;
 	import flash.net.Socket;
 	import flash.net.URLRequest;
 	import flash.system.Security;
+	import flash.utils.Timer;
+	
 	
 	public class CIMBridge extends Sprite
 	{
 		internal var CIM_HOST:String = "127.0.0.1";
-		internal var CIM_PORT:String = "23456";
-		internal var socket:Socket; 
+		internal var CIM_PORT:Number = 23456;
+		internal const TIME_OUT :Number =10000;
+		internal const RE_CONNECT_TIME :Number = 20000;
+		internal var socket:Socket = new Socket(); 
 		internal var froceOffline :Boolean = false;
 		internal const MESSAGE_SEPARATE :String = '\b';
 		/**
@@ -25,7 +31,7 @@ package
 		 */
 		internal const  CMD_HEARTBEAT_RESPONSE:String ="C_H_RS"; 
 		
-		internal var mBuffer :String = '\b';
+		internal var mBuffer :String = '';
 		
 		public function CIMBridge()
 		{
@@ -36,21 +42,31 @@ package
 			ExternalInterface.addCallback("logout",logout);
 			ExternalInterface.addCallback("playSound",playSound);
 			
-			ExternalInterface.call("bridgeCreationComplete");
+			ExternalInterface.call("flashBridgeCreated");
 			
 		}
-		public function connect(host:String):void
+		public function connect(host:String,port:Number):void
 		{	
 			 
 			CIM_HOST = host;
+			CIM_PORT = port;
 			var policyfile:String="xmlsocket://"+CIM_HOST+":"+CIM_PORT;
 			Security.loadPolicyFile(policyfile);//加载安全策略文件，得到相应的返回才会创建连接
-			socket=new Socket();
+			socket.timeout = TIME_OUT;
 			socket.addEventListener(Event.CONNECT,sessionCreated);//监听是否连接上服务器
 			socket.addEventListener(Event.CLOSE,sessionClosed);//监听套接字连接是否关闭
+			socket.addEventListener(IOErrorEvent.IO_ERROR,sessionFailed);//监听套接字连接是否失败
 			socket.addEventListener(ProgressEvent.SOCKET_DATA,messageReceived); //监听服务器消息
+			socket.connect(CIM_HOST,CIM_PORT);//连接服务器    
 			
-			socket.connect(CIM_HOST,parseInt(CIM_PORT));//连接服务器    
+			
+			var timer:Timer = new Timer(TIME_OUT, 1);
+			timer.addEventListener(TimerEvent.TIMER, function():void{  
+				if(socket.connected == false){
+					sessionFailed(new IOErrorEvent(""));
+				}
+			});
+			timer.start();
 			
 		}
 		
@@ -109,10 +125,29 @@ package
 			
 			if(!froceOffline)
 			{
-				connect(CIM_HOST);
+				reconnection();
 			}
 		}
 		 
+		private function sessionFailed(event:Event):void
+		{
+			//每隔20秒重新连接
+			
+			ExternalInterface.call("sessionFailed");
+			
+			reconnection();
+			
+		}
+		
+		private function reconnection():void{
+			var timer:Timer = new Timer(RE_CONNECT_TIME + Math.random() * 10, 1);
+			timer.addEventListener(TimerEvent.TIMER, function():void{  
+				connect(CIM_HOST,CIM_PORT);
+			});
+			timer.start();
+		
+		}
+		
 		
 		internal function handleMessage(message:String):void{
 		
